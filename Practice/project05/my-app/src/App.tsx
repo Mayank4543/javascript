@@ -86,6 +86,7 @@ const App = () => {
                                                 : (
                                                     cart.map((item) => (
                                                         <div className="" key={item.id} >
+                                                            <p>{CartBadgeCount}</p>
                                                             <p>
                                                                Product Name: {item.name}
                                                             </p>
