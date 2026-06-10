@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type ExpenseTracker = {
     id: number,
@@ -9,13 +9,21 @@ type ExpenseTracker = {
 }
 
 const App = () => {
-    const [expense, setExpense] = useState<ExpenseTracker[]>([]);
+    const [expense, setExpense] = useState<ExpenseTracker[]>(() => {
+        const storedTodos = localStorage.getItem("expense");
+        if (storedTodos) {
+            return JSON.parse(storedTodos);
+        }
+        return storedTodos ? JSON.parse(storedTodos) : [];
+
+    });
     const [form, setform] = useState({
         name: "",
         amount: "",
         category: "",
         date: ""
     });
+    const [search, setsearch] = useState("")
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement>
@@ -49,10 +57,24 @@ const App = () => {
         const deleteexpense = expense.filter((item) => item.id != id);
         setExpense(deleteexpense);
     }
+    const totalexpense = expense.reduce((sum, item) =>
+        sum + item.amount,
+        0
+    )
+    const filtersearch = expense.filter((items) => items.name.toLowerCase().includes(search.toLowerCase()) || items.category.toLowerCase().includes(search.toLowerCase()) || items.date.toLowerCase().includes(search.toLowerCase()))
+
+
+    const handlesearch = (value: string) => {
+        setsearch(value);
+    }
+    useEffect(() => {
+        localStorage.setItem("expense", JSON.stringify("expense"))
+    }, [expense])
     return (
         <>
 
             <div className='flex items-center justify-center min-h-screen flex-col '>
+                <input type="search" placeholder='Search expense..' value={search} onChange={(e) => handlesearch(e.target.value)} />
                 <button onClick={addExpense} className='px-5 py-3 rounded-xl bg-green-600 text-xl hover:bg-green-500 cursor-pointer text-black'>Add Expense</button>
                 <div className='flex flex-col'>
 
@@ -64,7 +86,7 @@ const App = () => {
                 </div>
                 <div>
                     {
-                        expense.map((item) => (
+                        filtersearch.map((item) => (
                             <div key={item.id}>
                                 <p>{item.name}</p>
                                 <p>{item.amount}</p>
@@ -74,6 +96,10 @@ const App = () => {
                             </div>
                         ))
                     }
+
+                </div>
+                <div>
+                    <p>Total Expense :{totalexpense}</p>
                 </div>
             </div>
         </>
