@@ -24,6 +24,7 @@ const App = () => {
         date: ""
     });
     const [search, setsearch] = useState("")
+    const [edit,setedit]=useState("")
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement>
@@ -67,6 +68,10 @@ const App = () => {
     const handlesearch = (value: string) => {
         setsearch(value);
     }
+    const handleedit=(index:number)=>{
+        const selectitem= expense.find((item)=>item.id=== index);
+        console.log(selectitem);
+    }
     useEffect(() => {
         localStorage.setItem("expense", JSON.stringify("expense"))
     }, [expense])
@@ -93,6 +98,7 @@ const App = () => {
                                 <p>{item.date}</p>
                                 <p>{item.category}</p>
                                 <button onClick={() => handledelteTracker(item.id)} className="bg-red-500 text-white px-4 py-4 rounded-xl hover:bg-red-600"> Delete</button>
+                                <button onClick={()=>handleedit(item.id)} className="bg-green-500 text-white px-4 py-4 rounded-xl hover:bg-green-600">Edit</button>
                             </div>
                         ))
                     }
