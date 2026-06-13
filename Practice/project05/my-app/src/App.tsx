@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Category } from 'tabler-icons-react';
+
 
 type ExpenseTracker = {
     id: number,
@@ -20,7 +22,7 @@ const App = () => {
         date: ""
     });
     const [search, setsearch] = useState("")
-    const [edit, setedit] = useState("")
+    const [edit, setedit] = useState<number | null>(null)
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement>
@@ -65,15 +67,48 @@ const App = () => {
         setsearch(value);
     }
     const handleedit = (index: number) => {
+        console.log("njbckjsdnc", typeof (expense))
         const selectitem = expense.find((item) => item.id === index);
-        console.log(selectitem);
+        if(!selectitem) return "";
+        setform({
+        name:selectitem.name,
+        amount:String(selectitem?.amount),
+        category:selectitem.category,
+        date:selectitem.date
+
+       })
+       setedit(index)
+    }
+    const updateExpense =()=>{
+              if(edit === null ) return ;
+              setExpense((prev)=>
+                 prev.map((item)=>
+                item.id===edit 
+                ?{
+                    ...item,
+                    name:item.name,
+                    amount:item.amount,
+                    category:item.category,
+                    date:item.date
+                }
+                :item
+                 
+                
+                )
+            )
+            setform({
+                name:"",
+                amount:"",
+                category:"",
+                date:""
+            })
+            setedit(null)
     }
     useEffect(() => {
         localStorage.setItem("expense", JSON.stringify(expense));
     }, [expense]);
     return (
         <>
-
             <div className='flex items-center justify-center min-h-screen flex-col '>
                 <input type="search" placeholder='Search expense..' value={search} onChange={(e) => handlesearch(e.target.value)} />
                 <button onClick={addExpense} className='px-5 py-3 rounded-xl bg-green-600 text-xl hover:bg-green-500 cursor-pointer text-black'>Add Expense</button>
