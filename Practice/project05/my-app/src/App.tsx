@@ -10,12 +10,8 @@ type ExpenseTracker = {
 
 const App = () => {
     const [expense, setExpense] = useState<ExpenseTracker[]>(() => {
-        const storedTodos = localStorage.getItem("expense");
-        if (storedTodos) {
-            return JSON.parse(storedTodos);
-        }
-        return storedTodos ? JSON.parse(storedTodos) : [];
-
+        const storedExpenses = localStorage.getItem("expense");
+        return storedExpenses ? JSON.parse(storedExpenses) : [];
     });
     const [form, setform] = useState({
         name: "",
@@ -24,7 +20,7 @@ const App = () => {
         date: ""
     });
     const [search, setsearch] = useState("")
-    const [edit,setedit]=useState("")
+    const [edit, setedit] = useState("")
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement>
@@ -62,19 +58,19 @@ const App = () => {
         sum + item.amount,
         0
     )
-    const filtersearch = expense.filter((items) => items.name.toLowerCase().includes(search.toLowerCase()) || items.category.toLowerCase().includes(search.toLowerCase()) || items.date.toLowerCase().includes(search.toLowerCase()))
 
+    const filtersearch = expense.filter((items) => items.name.toLowerCase().includes(search.toLowerCase()) || items.category.toLowerCase().includes(search.toLowerCase()) || items.date.toLowerCase().includes(search.toLowerCase()))
 
     const handlesearch = (value: string) => {
         setsearch(value);
     }
-    const handleedit=(index:number)=>{
-        const selectitem= expense.find((item)=>item.id=== index);
+    const handleedit = (index: number) => {
+        const selectitem = expense.find((item) => item.id === index);
         console.log(selectitem);
     }
     useEffect(() => {
-        localStorage.setItem("expense", JSON.stringify("expense"))
-    }, [expense])
+        localStorage.setItem("expense", JSON.stringify(expense));
+    }, [expense]);
     return (
         <>
 
@@ -98,7 +94,7 @@ const App = () => {
                                 <p>{item.date}</p>
                                 <p>{item.category}</p>
                                 <button onClick={() => handledelteTracker(item.id)} className="bg-red-500 text-white px-4 py-4 rounded-xl hover:bg-red-600"> Delete</button>
-                                <button onClick={()=>handleedit(item.id)} className="bg-green-500 text-white px-4 py-4 rounded-xl hover:bg-green-600">Edit</button>
+                                <button onClick={() => handleedit(item.id)} className="bg-green-500 text-white px-4 py-4 rounded-xl hover:bg-green-600">Edit</button>
                             </div>
                         ))
                     }
